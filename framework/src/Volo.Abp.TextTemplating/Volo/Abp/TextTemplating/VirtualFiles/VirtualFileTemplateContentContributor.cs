@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
 
 namespace Volo.Abp.TextTemplating.VirtualFiles
@@ -23,6 +24,14 @@ namespace Volo.Abp.TextTemplating.VirtualFiles
             return localizedReader.GetContentOrNull(
                 context.Culture
             );
+        }
+
+        public virtual async Task<List<TemplateContentInfo>> GetAllContentInfosAsync(TemplateDefinition templateDefinition)
+        {
+            var localizedReader = await _localizedTemplateContentReaderFactory
+                .CreateAsync(templateDefinition);
+
+            return localizedReader.GetAllContentInfos();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
 using Volo.Abp.VirtualFileSystem;
@@ -41,6 +42,18 @@ namespace Volo.Abp.TextTemplating.VirtualFiles
             }
 
             return _dictionary.GetOrDefault(cultureName);
+        }
+
+        public List<TemplateContentInfo> GetAllContentInfos()
+        {
+            var contentInfos = _dictionary.Select(
+                x => new TemplateContentInfo()
+                {
+                    CultureName = x.Key,
+                    Content = x.Value
+                }).ToList();
+
+            return contentInfos;
         }
     }
 }

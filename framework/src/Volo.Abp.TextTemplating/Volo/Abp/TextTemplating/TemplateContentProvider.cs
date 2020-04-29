@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,14 +27,14 @@ namespace Volo.Abp.TextTemplating
             _templateDefinitionManager = templateDefinitionManager;
         }
 
-        public virtual Task<string> GetContentOrNullAsync(
+        public virtual async Task<string> GetContentOrNullAsync(
             [NotNull] string templateName,
             [CanBeNull] string cultureName = null,
             bool tryDefaults = true,
             bool useCurrentCultureIfCultureNameIsNull = true)
         {
             var template = _templateDefinitionManager.Get(templateName);
-            return GetContentOrNullAsync(template, cultureName);
+            return await GetContentOrNullAsync(template, cultureName);
         }
 
         public virtual async Task<string> GetContentOrNullAsync(
@@ -141,6 +142,46 @@ namespace Volo.Abp.TextTemplating
 
             //Not found
             return null;
+        }
+
+        public virtual async Task<List<TemplateContentInfo>> GetAllContentsAsync(string templateName)
+        {
+            var template = _templateDefinitionManager.Get(templateName);
+            return await GetAllContentsAsync(template);
+        }
+
+        public virtual async Task<List<TemplateContentInfo>> GetAllContentsAsync(TemplateDefinition templateDefinition)
+        {
+            Check.NotNull(templateDefinition, nameof(templateDefinition));
+
+            if (!Options.ContentContributors.Any())
+            {
+                throw new AbpException(
+                    $"No template content contributor was registered. Use {nameof(AbpTextTemplatingOptions)} to register contributors!"
+                );
+            }
+
+            using (var scope = ServiceScopeFactory.CreateScope())
+            {
+                var contentInfoList = new List<TemplateContentInfo>();
+
+                var contributors = CreateTemplateContentContributors(scope.ServiceProvider);
+
+                foreach (var contributor in contributors)
+                {
+                    var contentInfos = await contributor.GetAllContentInfosAsync(templateDefinition);
+                    
+                    foreach (var templateContentInfo in contentInfos)
+                    {
+                        if (contentInfoList.All(x => x.CultureName != templateContentInfo.CultureName))
+                        {
+                            contentInfoList.Add(templateContentInfo);
+                        }
+                    }
+                }
+
+                return contentInfoList;
+            }
         }
 
         protected virtual ITemplateContentContributor[] CreateTemplateContentContributors(IServiceProvider serviceProvider)

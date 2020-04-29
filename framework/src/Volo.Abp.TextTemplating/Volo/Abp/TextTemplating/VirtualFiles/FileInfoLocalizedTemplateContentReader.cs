@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
 
 namespace Volo.Abp.TextTemplating.VirtualFiles
@@ -20,6 +22,19 @@ namespace Volo.Abp.TextTemplating.VirtualFiles
             }
 
             return null;
+        }
+
+        public List<TemplateContentInfo> GetAllContentInfos()
+        {
+            var info = new List<TemplateContentInfo>()
+            {
+                new TemplateContentInfo()
+                {
+                    Content = _content
+                }
+            };
+
+            return info;
         }
     }
 }

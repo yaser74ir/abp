@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Volo.Abp.TextTemplating
@@ -18,5 +19,9 @@ namespace Volo.Abp.TextTemplating
             bool tryDefaults = true,
             bool useCurrentCultureIfCultureNameIsNull = true
         );
+
+        Task<List<TemplateContentInfo>> GetAllContentsAsync([NotNull] string templateName);
+
+        Task<List<TemplateContentInfo>> GetAllContentsAsync([NotNull] TemplateDefinition templateDefinition);
     }
 }
