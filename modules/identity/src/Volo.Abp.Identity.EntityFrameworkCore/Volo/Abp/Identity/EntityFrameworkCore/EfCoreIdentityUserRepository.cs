@@ -19,20 +19,29 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
         }
 
         public virtual async Task<IdentityUser> FindByNormalizedUserNameAsync(
-            string normalizedUserName, 
+            string normalizedUserName,
             bool includeDetails = true,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            bool useWildCardsInUsername = false)
         {
-            return await DbSet
-                .IncludeDetails(includeDetails)
-                .FirstOrDefaultAsync(
-                    u => u.NormalizedUserName == normalizedUserName,
+            var query = DbSet.IncludeDetails(includeDetails);
+
+            if (useWildCardsInUsername)
+            {
+                return await query.FirstOrDefaultAsync(
+                    u => EF.Functions.Like(u.NormalizedUserName, normalizedUserName),
                     GetCancellationToken(cancellationToken)
                 );
+            }
+
+            return await query.FirstOrDefaultAsync(
+                u => u.NormalizedUserName == normalizedUserName,
+                GetCancellationToken(cancellationToken)
+            );
         }
 
         public virtual async Task<List<string>> GetRoleNamesAsync(
-            Guid id, 
+            Guid id,
             CancellationToken cancellationToken = default)
         {
             var query = from userRole in DbContext.Set<IdentityUserRole>()
@@ -44,25 +53,49 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
         }
 
         public virtual async Task<IdentityUser> FindByLoginAsync(
-            string loginProvider, 
-            string providerKey, 
+            string loginProvider,
+            string providerKey,
             bool includeDetails = true,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            bool useWildCardsInProviderKey = false)
         {
-            return await DbSet
-                .IncludeDetails(includeDetails)
-                .Where(u => u.Logins.Any(login => login.LoginProvider == loginProvider && login.ProviderKey == providerKey))
-                .FirstOrDefaultAsync(GetCancellationToken(cancellationToken));
+            var query = DbSet.IncludeDetails(includeDetails);
+
+            if (useWildCardsInProviderKey)
+            {
+                return await query
+                    .Where(u => u.Logins.Any(login =>
+                        login.LoginProvider == loginProvider && EF.Functions.Like(u.NormalizedUserName, providerKey))
+                    ).FirstOrDefaultAsync(GetCancellationToken(cancellationToken));
+            }
+
+            return await query.Where(
+                u => u.Logins.Any(login => login.LoginProvider == loginProvider && login.ProviderKey == providerKey)
+            ).FirstOrDefaultAsync(GetCancellationToken(cancellationToken));
         }
 
         public virtual async Task<IdentityUser> FindByNormalizedEmailAsync(
             string normalizedEmail,
             bool includeDetails = true,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            bool useWildCardsInEmail = false)
         {
-            return await DbSet
-                .IncludeDetails(includeDetails)
-                .FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail, GetCancellationToken(cancellationToken));
+            var query = DbSet.IncludeDetails(includeDetails);
+
+            if (useWildCardsInEmail)
+            {
+                return await query
+                    .FirstOrDefaultAsync(
+                        u => EF.Functions.Like(u.NormalizedEmail, normalizedEmail),
+                        GetCancellationToken(cancellationToken)
+                    );
+            }
+
+            return await query
+                .FirstOrDefaultAsync(
+                    u => u.NormalizedEmail == normalizedEmail,
+                    GetCancellationToken(cancellationToken)
+                );
         }
 
         public virtual async Task<List<IdentityUser>> GetListByClaimAsync(
@@ -77,7 +110,7 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
         }
 
         public virtual async Task<List<IdentityUser>> GetListByNormalizedRoleNameAsync(
-            string normalizedRoleName, 
+            string normalizedRoleName,
             bool includeDetails = false,
             CancellationToken cancellationToken = default)
         {
@@ -97,10 +130,10 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
         }
 
         public virtual async Task<List<IdentityUser>> GetListAsync(
-            string sorting = null, 
+            string sorting = null,
             int maxResultCount = int.MaxValue,
-            int skipCount = 0, 
-            string filter = null, 
+            int skipCount = 0,
+            string filter = null,
             bool includeDetails = false,
             CancellationToken cancellationToken = default)
         {
@@ -131,7 +164,7 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
         }
 
         public virtual async Task<long> GetCountAsync(
-            string filter = null, 
+            string filter = null,
             CancellationToken cancellationToken = default)
         {
             return await this.WhereIf(

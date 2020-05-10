@@ -13,7 +13,8 @@ namespace Volo.Abp.Identity
         Task<IdentityUser> FindByNormalizedUserNameAsync(
             [NotNull] string normalizedUserName,
             bool includeDetails = true,
-            CancellationToken cancellationToken = default
+            CancellationToken cancellationToken = default,
+            bool useWildCardsInUsername = false
         );
 
         Task<List<string>> GetRoleNamesAsync(
@@ -25,23 +26,25 @@ namespace Volo.Abp.Identity
             [NotNull] string loginProvider,
             [NotNull] string providerKey,
             bool includeDetails = true,
-            CancellationToken cancellationToken = default
+            CancellationToken cancellationToken = default,
+            bool useWildCardsInProviderKey = false
         );
 
         Task<IdentityUser> FindByNormalizedEmailAsync(
-            [NotNull] string normalizedEmail, 
+            [NotNull] string normalizedEmail,
             bool includeDetails = true,
-            CancellationToken cancellationToken = default
+            CancellationToken cancellationToken = default,
+            bool useWildCardsInEmail = false
         );
 
         Task<List<IdentityUser>> GetListByClaimAsync(
-            Claim claim, 
+            Claim claim,
             bool includeDetails = false,
             CancellationToken cancellationToken = default
         );
 
         Task<List<IdentityUser>> GetListByNormalizedRoleNameAsync(
-            string normalizedRoleName, 
+            string normalizedRoleName,
             bool includeDetails = false,
             CancellationToken cancellationToken = default
         );
