@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -33,6 +34,8 @@ namespace Volo.Abp.Modularity
         public void InitializeModules(ApplicationInitializationContext context)
         {
             LogListOfModules();
+            
+            _logger.LogInformation("Initializing modules;");
 
             foreach (var contributor in _lifecycleContributors)
             {
@@ -40,7 +43,16 @@ namespace Volo.Abp.Modularity
                 {
                     try
                     {
-                        contributor.Initialize(context, module.Instance);
+                        var sw = Stopwatch.StartNew();
+                        try
+                        {
+                            contributor.Initialize(context, module.Instance);
+                        }
+                        finally
+                        {
+                            sw.Stop();
+                            _logger.LogDebug($"Initialized {contributor.GetType().Name} module: {module.Type.FullName} in {sw.Elapsed.TotalMilliseconds:0.000}");
+                        }
                     }
                     catch (Exception ex)
                     {

@@ -41,7 +41,11 @@ namespace Volo.Abp
             services.AddCoreServices();
             services.AddCoreAbpServices(this, options);
 
+            ModuleLoader.Log("Loading modules...");
+            
             Modules = LoadModules(services, options);
+            
+            ModuleLoader.Log("Loaded all modules!");
         }
 
         public virtual void Shutdown()

@@ -83,7 +83,8 @@ namespace Autofac.Builder
             }
             else
             {
-                (registrationBuilder as IRegistrationBuilder<TLimit, ConcreteReflectionActivatorData, TRegistrationStyle>)?.EnableClassInterceptors();
+                (registrationBuilder as IRegistrationBuilder<TLimit, ConcreteReflectionActivatorData, TRegistrationStyle>)
+                    ?.EnableClassInterceptors();
             }
 
             foreach (var interceptor in interceptors)

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using Volo.Abp.Modularity;
 
 namespace MyCompanyName.MyProjectName.Web
 {
@@ -10,6 +12,8 @@ namespace MyCompanyName.MyProjectName.Web
     {
         public static int Main(string[] args)
         {
+            ModuleLoader.Log("Program.Main starting...");
+
             Log.Logger = new LoggerConfiguration()
 #if DEBUG
                 .MinimumLevel.Debug()
@@ -25,26 +29,28 @@ namespace MyCompanyName.MyProjectName.Web
             try
             {
                 Log.Information("Starting web host.");
-                CreateHostBuilder(args).Build().Run();
-                return 0;
+                var hb = CreateHostBuilder(args);
+                Log.Information("After CreateHostBuilder"); 
+                var builtHb = hb.Build();
+                Log.Information("After Host.Build"); 
+                builtHb.Run(); 
+                Log.Information("After run.");  
+                return 0; 
             }
-            catch (Exception ex)
+            catch (Exception ex)  
             {
                 Log.Fatal(ex, "Host terminated unexpectedly!");
                 return 1;
             }
             finally
             {
-                Log.CloseAndFlush();
+                Log.CloseAndFlush(); 
             }
         }
 
         internal static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                })
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
                 .UseAutofac()
                 .UseSerilog();
     }

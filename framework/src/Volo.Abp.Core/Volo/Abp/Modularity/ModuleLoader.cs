@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity.PlugIns;
@@ -8,6 +10,11 @@ namespace Volo.Abp.Modularity
 {
     public class ModuleLoader : IModuleLoader
     {
+        public static void Log(string text)
+        {
+            File.AppendAllText("C:\\Temp\\ModuleLoader.txt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " - " + text + Environment.NewLine);
+        }
+        
         public IAbpModuleDescriptor[] LoadModules(
             IServiceCollection services,
             Type startupModuleType,
@@ -105,40 +112,53 @@ namespace Volo.Abp.Modularity
             //PreConfigureServices
             foreach (var module in modules.Where(m => m.Instance is IPreConfigureServices))
             {
+                var sw = Stopwatch.StartNew();
                 try
                 {
-                    ((IPreConfigureServices)module.Instance).PreConfigureServices(context);
+                    ((IPreConfigureServices) module.Instance).PreConfigureServices(context);
                 }
                 catch (Exception ex)
                 {
-                    throw new AbpInitializationException($"An error occurred during {nameof(IPreConfigureServices.PreConfigureServices)} phase of the module {module.Type.AssemblyQualifiedName}. See the inner exception for details.", ex);
+                    throw new AbpInitializationException(
+                        $"An error occurred during {nameof(IPreConfigureServices.PreConfigureServices)} phase of the module {module.Type.AssemblyQualifiedName}. See the inner exception for details.",
+                        ex);
+                }
+                finally
+                {
+                    Log($"PreConfigureServices: {module.Type.FullName} in {sw.Elapsed.TotalMilliseconds:000}ms");
                 }
             }
 
             //ConfigureServices
             foreach (var module in modules)
             {
-                if (module.Instance is AbpModule abpModule)
-                {
-                    if (!abpModule.SkipAutoServiceRegistration)
-                    {
-                        services.AddAssembly(module.Type.Assembly);
-                    }
-                }
-
+                var sw = Stopwatch.StartNew();
                 try
                 {
+                    if (module.Instance is AbpModule abpModule)
+                    {
+                        if (!abpModule.SkipAutoServiceRegistration)
+                        {
+                            services.AddAssembly(module.Type.Assembly);
+                        }
+                    }
+
                     module.Instance.ConfigureServices(context);
                 }
                 catch (Exception ex)
                 {
                     throw new AbpInitializationException($"An error occurred during {nameof(IAbpModule.ConfigureServices)} phase of the module {module.Type.AssemblyQualifiedName}. See the inner exception for details.", ex);
                 }
+                finally
+                {
+                    Log($"ConfigureServices: {module.Type.FullName} in {sw.Elapsed.TotalMilliseconds:000}ms");
+                }
             }
 
             //PostConfigureServices
             foreach (var module in modules.Where(m => m.Instance is IPostConfigureServices))
             {
+                var sw = Stopwatch.StartNew();
                 try
                 {
                     ((IPostConfigureServices)module.Instance).PostConfigureServices(context);
@@ -146,6 +166,10 @@ namespace Volo.Abp.Modularity
                 catch (Exception ex)
                 {
                     throw new AbpInitializationException($"An error occurred during {nameof(IPostConfigureServices.PostConfigureServices)} phase of the module {module.Type.AssemblyQualifiedName}. See the inner exception for details.", ex);
+                }
+                finally
+                {
+                    Log($"PostConfigureServices: {module.Type.FullName} in {sw.Elapsed.TotalMilliseconds:000}ms");
                 }
             }
 

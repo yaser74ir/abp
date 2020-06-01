@@ -48,8 +48,8 @@ namespace MyCompanyName.MyProjectName
             var hostingEnvironment = context.Services.GetHostingEnvironment();
             var configuration = context.Services.GetConfiguration();
 
-            Configure<AbpLocalizationOptions>(options =>
-            {
+            Configure<AbpLocalizationOptions>(options => 
+            { 
                 options.Resources
                     .Get<MyProjectNameResource>()
                     .AddBaseTypes(

@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using Volo.Abp.Auditing;
+using Volo.Abp;
 
 namespace Volo.Abp.AutoMapper
 {
