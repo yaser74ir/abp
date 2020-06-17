@@ -2,7 +2,7 @@
   "culture": "en",
   "texts": {
     "Menu:Blogs": "Blogs",
-    "Menu:BlogManagement": "Blog Management",
+    "Menu:BlogManagement": "Blogging",
     "Title": "Title",
     "Delete": "Delete",
     "Reply": "Reply",
@@ -43,6 +43,7 @@
     "Description": "Description",
     "Blogs": "Blogs",
     "Tags": "Tags",
-    "ShareOn": "Share on"
+    "ShareOn": "Share on",
+    "TitleLengthWarning": "Keep your title size under 60 characters to be SEO friendly!"
   }
 }

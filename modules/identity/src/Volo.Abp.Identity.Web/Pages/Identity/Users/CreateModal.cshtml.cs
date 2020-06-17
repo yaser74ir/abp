@@ -17,19 +17,17 @@ namespace Volo.Abp.Identity.Web.Pages.Identity.Users
         public AssignedRoleViewModel[] Roles { get; set; }
 
         protected IIdentityUserAppService IdentityUserAppService { get; }
-        protected IIdentityRoleAppService IdentityRoleAppService { get; }
 
-        public CreateModalModel(IIdentityUserAppService identityUserAppService, IIdentityRoleAppService identityRoleAppService)
+        public CreateModalModel(IIdentityUserAppService identityUserAppService)
         {
             IdentityUserAppService = identityUserAppService;
-            IdentityRoleAppService = identityRoleAppService;
         }
 
-        public virtual async Task OnGetAsync()
+        public virtual async Task<IActionResult> OnGetAsync()
         {
             UserInfo = new UserInfoViewModel();
 
-            var roleDtoList = (await IdentityRoleAppService.GetAllListAsync()).Items;
+            var roleDtoList = (await IdentityUserAppService.GetAssignableRolesAsync()).Items;
 
             Roles = ObjectMapper.Map<IReadOnlyList<IdentityRoleDto>, AssignedRoleViewModel[]>(roleDtoList);
 
@@ -37,6 +35,8 @@ namespace Volo.Abp.Identity.Web.Pages.Identity.Users
             {
                 role.IsAssigned = role.IsDefault;
             }
+
+            return Page();
         }
 
         public virtual async Task<NoContentResult> OnPostAsync()

@@ -22,16 +22,46 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "extractCss": true,
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
-              "src/styles.scss",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/font-awesome/css/font-awesome.min.css",
-              "node_modules/primeng/resources/themes/nova-light/theme.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeng/resources/primeng.min.css"
+              {
+                "input": "node_modules/@abp/ng.theme.shared/styles/bootstrap-rtl.min.css",
+                "inject": false,
+                "bundleName": "bootstrap-rtl.min"
+              },
+              {
+                "input": "node_modules/bootstrap/dist/css/bootstrap.min.css",
+                "inject": true,
+                "bundleName": "bootstrap-ltr.min"
+              },
+              {
+                "input": "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+                "inject": true,
+                "bundleName": "fontawesome-all.min"
+              },
+              {
+                "input": "node_modules/@fortawesome/fontawesome-free/css/v4-shims.min.css",
+                "inject": true,
+                "bundleName": "fontawesome-v4-shims.min"
+              },
+              {
+                "input": "node_modules/@swimlane/ngx-datatable/index.css",
+                "inject": true,
+                "bundleName": "ngx-datatable-index"
+              },
+              {
+                "input": "node_modules/@swimlane/ngx-datatable/assets/icons.css",
+                "inject": true,
+                "bundleName": "ngx-datatable-icons"
+              },
+              {
+                "input": "node_modules/@swimlane/ngx-datatable/themes/material.css",
+                "inject": true,
+                "bundleName": "ngx-datatable-material"
+              },
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -48,7 +78,6 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -57,14 +86,10 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
-                }
-              ]
-            },
-            "hmr": {
-              "fileReplacements": [
+                },
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.hmr.ts"
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }
@@ -78,10 +103,6 @@
           "configurations": {
             "production": {
               "browserTarget": "myProjectName:build:production"
-            },
-            "hmr": {
-              "hmr": true,
-              "browserTarget": "myProjectName:build:hmr"
             }
           }
         },
@@ -100,12 +121,22 @@
             "karmaConfig": "karma.conf.js",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
+              {
+                "input": "node_modules/bootstrap/dist/css/bootstrap.min.css",
+                "inject": true,
+                "bundleName": "bootstrap.min"
+              },
               "src/styles.scss",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/font-awesome/css/font-awesome.min.css",
-              "node_modules/primeng/resources/themes/nova-light/theme.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeng/resources/primeng.min.css"
+              {
+                "input": "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+                "inject": false,
+                "bundleName": "fontawesome-all.min"
+              },
+              {
+                "input": "node_modules/@fortawesome/fontawesome-free/css/v4-shims.min.css",
+                "inject": false,
+                "bundleName": "fontawesome-v4-shims.min"
+              }
             ],
             "scripts": []
           }
@@ -142,6 +173,11 @@
           "options": {
             "tsConfig": "projects/my-project-name/tsconfig.lib.json",
             "project": "projects/my-project-name/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/my-project-name/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -159,9 +195,7 @@
               "projects/my-project-name/tsconfig.lib.json",
               "projects/my-project-name/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -177,6 +211,11 @@
           "options": {
             "tsConfig": "projects/my-project-name-config/tsconfig.lib.json",
             "project": "projects/my-project-name-config/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/my-project-name-config/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -194,13 +233,14 @@
               "projects/my-project-name-config/tsconfig.lib.json",
               "projects/my-project-name-config/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
     }
   },
-  "defaultProject": "myProjectName"
+  "defaultProject": "myProjectName",
+  "cli": {
+    "analytics": false
+  }
 }

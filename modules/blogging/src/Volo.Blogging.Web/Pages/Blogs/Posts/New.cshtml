@@ -1,8 +1,11 @@
 ﻿@page
 @using Volo.Abp.AspNetCore.Mvc.UI.Packages.TuiEditor
 @using Volo.Blogging.Pages.Blog.Posts
+@using Volo.Blogging.Posts
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Volo.Blogging.Localization
+@inject IHtmlLocalizer<BloggingResource> L
 @model NewModel
-@inherits Volo.Blogging.Pages.Blog.BloggingPage
 @{
     ViewBag.PageTitle = "Blog";
 }
@@ -21,12 +24,20 @@
 <div id="qa-new-post-container">
     <div class="container py-5">
         <div class="row">
-            <div class="col-10 col-md-8 col-lg-7 mx-auto">
+            <div class="col-12 col-md-8 col-lg-7 mx-auto">
                 <div class="card">
                     <div class="card-body">
                         <form method="post" id="new-post-form">
                             <abp-input asp-for="Post.BlogId" />
                             <abp-input asp-for="Post.Title" auto-focus="true" />
+
+                            <abp-alert dismissible="true"
+                                       style="display: none"
+                                       id="title-length-warning"
+                                       data-max-length="@PostConsts.MaxTitleLengthToBeSeoFriendly">
+                                @L["TitleLengthWarning"]
+                            </abp-alert>
+
                             <abp-input asp-for="Post.Url" />
                             <abp-input asp-for="Post.CoverImage" />
 
@@ -44,6 +55,7 @@
 
                             <abp-input asp-for="Post.Content" />
                             <abp-input asp-for="Post.Tags" />
+                            <abp-input asp-for="Post.Description" />
 
 
                             <div class="form-group">
@@ -69,10 +81,10 @@
 
                                     <a asp-page="./Index" class="btn btn-default mr-2"><span>@L["Cancel"]</span></a>
                                 </div>
-                            </div> 
+                            </div>
                         </form>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
     </div>

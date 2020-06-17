@@ -1,8 +1,11 @@
 ﻿@page
 @using Volo.Abp.AspNetCore.Mvc.UI.Packages.TuiEditor
 @using Volo.Blogging.Pages.Blog.Posts
+@using Volo.Blogging.Posts
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Volo.Blogging.Localization
+@inject IHtmlLocalizer<BloggingResource> L
 @model EditModel
-@inherits Volo.Blogging.Pages.Blog.BloggingPage
 @{
     ViewBag.PageTitle = "Blog";
 }
@@ -17,15 +20,24 @@
         <abp-script type="@typeof(TuiEditorScriptContributor)" />
         <abp-script src="/Pages/Blogs/Posts/edit.js" />
     </abp-script-bundle>
-} 
+}
 <div id="edit-post-container">
     <div class="container py-5">
         <div class="row">
-            <div class="col-10 col-md-8 col-lg-7 mx-auto">
+            <div class="col-12 col-md-8 col-lg-7 mx-auto">
                 <div class="card">
-                    <div class="card-body"> 
+                    <div class="card-body">
                         <form method="post" id="edit-post-form">
                             <abp-input asp-for="Post.Title" auto-focus="true" />
+
+                            <abp-alert
+                                dismissible="true"
+                                style="display: none"
+                                id="title-length-warning"
+                                data-max-length="@PostConsts.MaxTitleLengthToBeSeoFriendly">
+                                @L["TitleLengthWarning"]
+                            </abp-alert>
+
                             <abp-input asp-for="Post.Url" />
                             <abp-input asp-for="Post.CoverImage" />
 
@@ -41,7 +53,9 @@
                                 </abp-column>
                             </abp-row>
 
+
                             <abp-input asp-for="Post.Tags" />
+                            <abp-input asp-for="Post.Description" />
                             <abp-input asp-for="Post.BlogId" />
                             <abp-input asp-for="Post.Id" />
                             <abp-input asp-for="Post.Content" />
@@ -75,5 +89,5 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
 </div>

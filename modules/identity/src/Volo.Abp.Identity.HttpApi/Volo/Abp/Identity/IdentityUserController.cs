@@ -6,7 +6,7 @@ using Volo.Abp.AspNetCore.Mvc;
 
 namespace Volo.Abp.Identity
 {
-    [RemoteService]
+    [RemoteService(Name = IdentityRemoteServiceConsts.RemoteServiceName)]
     [Area("identity")]
     [ControllerName("User")]
     [Route("api/identity/users")]
@@ -57,6 +57,13 @@ namespace Volo.Abp.Identity
         public virtual Task<ListResultDto<IdentityRoleDto>> GetRolesAsync(Guid id)
         {
             return UserAppService.GetRolesAsync(id);
+        }
+
+        [HttpGet]
+        [Route("assignable-roles")]
+        public Task<ListResultDto<IdentityRoleDto>> GetAssignableRolesAsync()
+        {
+            return UserAppService.GetAssignableRolesAsync();
         }
 
         [HttpPut]
