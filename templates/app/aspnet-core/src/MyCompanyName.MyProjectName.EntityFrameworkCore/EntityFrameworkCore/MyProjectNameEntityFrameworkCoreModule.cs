@@ -2,7 +2,8 @@
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EntityFrameworkCore.SqlServer;
+using Volo.Abp.EntityFrameworkCore.Oracle;
+using Volo.Abp.EntityFrameworkCore.Oracle.Devart;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity.EntityFrameworkCore;
 using Volo.Abp.IdentityServer.EntityFrameworkCore;
@@ -19,7 +20,7 @@ namespace MyCompanyName.MyProjectName.EntityFrameworkCore
         typeof(AbpIdentityServerEntityFrameworkCoreModule),
         typeof(AbpPermissionManagementEntityFrameworkCoreModule),
         typeof(AbpSettingManagementEntityFrameworkCoreModule),
-        typeof(AbpEntityFrameworkCoreSqlServerModule),
+        typeof(AbpEntityFrameworkCoreOracleDevartModule),
         typeof(AbpBackgroundJobsEntityFrameworkCoreModule),
         typeof(AbpAuditLoggingEntityFrameworkCoreModule),
         typeof(AbpTenantManagementEntityFrameworkCoreModule),
@@ -45,7 +46,7 @@ namespace MyCompanyName.MyProjectName.EntityFrameworkCore
             {
                 /* The main point to change your DBMS.
                  * See also MyProjectNameMigrationsDbContextFactory for EF Core tooling. */
-                options.UseSqlServer();
+                options.UseOracle(useExistingConnectionIfAvailable: true);
             });
         }
     }

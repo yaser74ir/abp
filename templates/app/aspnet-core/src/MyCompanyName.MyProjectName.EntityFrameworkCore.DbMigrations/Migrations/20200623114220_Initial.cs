@@ -30,7 +30,7 @@ namespace MyCompanyName.MyProjectName.Migrations
                     BrowserInfo = table.Column<string>(maxLength: 512, nullable: true),
                     HttpMethod = table.Column<string>(maxLength: 16, nullable: true),
                     Url = table.Column<string>(maxLength: 256, nullable: true),
-                    Exceptions = table.Column<string>(maxLength: 4000, nullable: true),
+                    Exceptions = table.Column<string>(maxLength: 2000, nullable: true),
                     Comments = table.Column<string>(maxLength: 256, nullable: true),
                     HttpStatusCode = table.Column<int>(nullable: true)
                 },
@@ -165,7 +165,7 @@ namespace MyCompanyName.MyProjectName.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(maxLength: 128, nullable: false),
-                    Value = table.Column<string>(maxLength: 2048, nullable: false),
+                    Value = table.Column<string>(maxLength: 2000, nullable: false),
                     ProviderName = table.Column<string>(maxLength: 64, nullable: true),
                     ProviderKey = table.Column<string>(maxLength: 64, nullable: true)
                 },
@@ -224,7 +224,7 @@ namespace MyCompanyName.MyProjectName.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false, defaultValue: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false, defaultValue: false),
-                    AccessFailedCount = table.Column<int>(nullable: false, defaultValue: 0)
+                    AccessFailedCount = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -660,7 +660,7 @@ namespace MyCompanyName.MyProjectName.Migrations
                 columns: table => new
                 {
                     Type = table.Column<string>(maxLength: 250, nullable: false),
-                    Value = table.Column<string>(maxLength: 4000, nullable: false),
+                    Value = table.Column<string>(maxLength: 300, nullable: false),
                     ApiResourceId = table.Column<Guid>(nullable: false),
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
                     Expiration = table.Column<DateTime>(nullable: true)
@@ -827,7 +827,7 @@ namespace MyCompanyName.MyProjectName.Migrations
                 columns: table => new
                 {
                     Type = table.Column<string>(maxLength: 250, nullable: false),
-                    Value = table.Column<string>(maxLength: 4000, nullable: false),
+                    Value = table.Column<string>(maxLength: 300, nullable: false),
                     ClientId = table.Column<Guid>(nullable: false),
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
                     Expiration = table.Column<DateTime>(nullable: true)

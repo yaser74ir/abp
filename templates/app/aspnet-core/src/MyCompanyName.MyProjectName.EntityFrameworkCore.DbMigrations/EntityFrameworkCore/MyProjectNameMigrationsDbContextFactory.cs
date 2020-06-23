@@ -15,8 +15,8 @@ namespace MyCompanyName.MyProjectName.EntityFrameworkCore
 
             var configuration = BuildConfiguration();
 
-            var builder = new DbContextOptionsBuilder<MyProjectNameMigrationsDbContext>()
-                .UseSqlServer(configuration.GetConnectionString("Default"));
+            var builder = (DbContextOptionsBuilder<MyProjectNameMigrationsDbContext>)new DbContextOptionsBuilder<MyProjectNameMigrationsDbContext>()
+                .UseOracle(configuration.GetConnectionString("Default"));
 
             return new MyProjectNameMigrationsDbContext(builder.Options);
         }

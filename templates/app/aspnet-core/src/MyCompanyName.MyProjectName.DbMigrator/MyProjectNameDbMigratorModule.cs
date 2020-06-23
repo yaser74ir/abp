@@ -2,6 +2,7 @@
 using Volo.Abp.Autofac;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Modularity;
+using Volo.Abp.Uow;
 
 namespace MyCompanyName.MyProjectName.DbMigrator
 {
